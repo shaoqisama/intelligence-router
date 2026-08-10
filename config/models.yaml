@@ -1,0 +1,435 @@
+# Pricing snapshot: 2026-08-09. Verify vendor pricing before production deployment.
+# All prices are USD per one million tokens.
+version: "2026-08-09-mvp"
+models:
+  # Offline models make the repository runnable without any provider key.
+  - id: mock/fast
+    provider: mock
+    adapter: mock
+    provider_model: mock-fast
+    mock_profile: fast
+    pricing:
+      input_per_million: 0.05
+      output_per_million: 0.10
+      cached_input_per_million: 0.01
+    context_window: 128000
+    max_output_tokens: 8192
+    expected_latency_ms: 35
+    quality:
+      general: 0.63
+      classification: 0.84
+      extraction: 0.82
+      summarization: 0.76
+      translation: 0.76
+      customer_support: 0.72
+      coding: 0.55
+      math: 0.50
+      reasoning: 0.48
+      research: 0.44
+      creative: 0.61
+      agentic: 0.57
+    capabilities: [text, json, tools, vision, reasoning, long_context]
+    data_boundary: local
+    tags: [offline, sampling]
+
+  - id: mock/balanced
+    provider: mock
+    adapter: mock
+    provider_model: mock-balanced
+    mock_profile: balanced
+    pricing:
+      input_per_million: 0.20
+      output_per_million: 0.80
+      cached_input_per_million: 0.04
+    context_window: 256000
+    max_output_tokens: 16384
+    expected_latency_ms: 90
+    quality:
+      general: 0.79
+      classification: 0.88
+      extraction: 0.88
+      summarization: 0.85
+      translation: 0.84
+      customer_support: 0.84
+      coding: 0.77
+      math: 0.74
+      reasoning: 0.75
+      research: 0.72
+      creative: 0.80
+      agentic: 0.78
+    capabilities: [text, json, tools, vision, reasoning, long_context]
+    data_boundary: local
+    tags: [offline, sampling]
+
+  - id: mock/smart
+    provider: mock
+    adapter: mock
+    provider_model: mock-smart
+    mock_profile: smart
+    pricing:
+      input_per_million: 2.00
+      output_per_million: 8.00
+      cached_input_per_million: 0.40
+    context_window: 1000000
+    max_output_tokens: 65536
+    expected_latency_ms: 260
+    quality:
+      general: 0.93
+      classification: 0.93
+      extraction: 0.94
+      summarization: 0.93
+      translation: 0.92
+      customer_support: 0.92
+      coding: 0.94
+      math: 0.95
+      reasoning: 0.95
+      research: 0.94
+      creative: 0.92
+      agentic: 0.94
+    capabilities: [text, json, tools, vision, reasoning, long_context]
+    data_boundary: local
+    tags: [offline, sampling]
+
+  # OpenAI native Responses API.
+  - id: openai/gpt-5.6-luna
+    provider: openai
+    adapter: openai_responses
+    provider_model: gpt-5.6-luna
+    api_key_env: OPENAI_API_KEY
+    pricing:
+      input_per_million: 0.20
+      output_per_million: 1.20
+    context_window: 1050000
+    max_output_tokens: 128000
+    expected_latency_ms: 900
+    quality: &luna_quality
+      general: 0.80
+      classification: 0.90
+      extraction: 0.89
+      summarization: 0.86
+      translation: 0.87
+      customer_support: 0.86
+      coding: 0.79
+      math: 0.77
+      reasoning: 0.78
+      research: 0.76
+      creative: 0.80
+      agentic: 0.82
+    capabilities: [text, vision, json, tools, reasoning, long_context, web_search, file_search, computer_use]
+    data_boundary: external
+    tags: [native-tools]
+
+  - id: openai/gpt-5.6-terra
+    provider: openai
+    adapter: openai_responses
+    provider_model: gpt-5.6-terra
+    api_key_env: OPENAI_API_KEY
+    pricing:
+      input_per_million: 2.00
+      output_per_million: 12.00
+    context_window: 1050000
+    max_output_tokens: 128000
+    expected_latency_ms: 1900
+    quality:
+      general: 0.93
+      classification: 0.94
+      extraction: 0.95
+      summarization: 0.94
+      translation: 0.94
+      customer_support: 0.93
+      coding: 0.94
+      math: 0.94
+      reasoning: 0.95
+      research: 0.94
+      creative: 0.93
+      agentic: 0.95
+    capabilities: [text, vision, json, tools, reasoning, long_context, web_search, file_search, computer_use]
+    data_boundary: external
+    tags: [native-tools]
+
+  - id: openai/gpt-5.6-sol
+    provider: openai
+    adapter: openai_responses
+    provider_model: gpt-5.6-sol
+    api_key_env: OPENAI_API_KEY
+    pricing:
+      input_per_million: 5.00
+      output_per_million: 30.00
+    context_window: 1050000
+    max_output_tokens: 128000
+    expected_latency_ms: 3600
+    quality:
+      general: 0.98
+      classification: 0.97
+      extraction: 0.98
+      summarization: 0.98
+      translation: 0.97
+      customer_support: 0.97
+      coding: 0.99
+      math: 0.99
+      reasoning: 0.99
+      research: 0.99
+      creative: 0.98
+      agentic: 0.99
+    capabilities: [text, vision, json, tools, reasoning, long_context, web_search, file_search, computer_use]
+    data_boundary: external
+    tags: [native-tools]
+
+  # Anthropic native Messages API.
+  - id: anthropic/claude-haiku-4.5
+    provider: anthropic
+    adapter: anthropic_messages
+    provider_model: claude-haiku-4-5-20251001
+    api_key_env: ANTHROPIC_API_KEY
+    pricing:
+      input_per_million: 1.00
+      output_per_million: 5.00
+    context_window: 200000
+    max_output_tokens: 64000
+    expected_latency_ms: 850
+    quality:
+      general: 0.82
+      classification: 0.89
+      extraction: 0.88
+      summarization: 0.87
+      translation: 0.86
+      customer_support: 0.88
+      coding: 0.82
+      math: 0.77
+      reasoning: 0.80
+      research: 0.79
+      creative: 0.85
+      agentic: 0.83
+    capabilities: [text, vision, json, tools, reasoning, long_context]
+    data_boundary: external
+    tags: [sampling]
+
+  - id: anthropic/claude-sonnet-5
+    provider: anthropic
+    adapter: anthropic_messages
+    provider_model: claude-sonnet-5
+    api_key_env: ANTHROPIC_API_KEY
+    pricing:
+      # Conservative standard price; an introductory discount was time-limited.
+      input_per_million: 3.00
+      output_per_million: 15.00
+    context_window: 1000000
+    max_output_tokens: 128000
+    expected_latency_ms: 2100
+    quality:
+      general: 0.95
+      classification: 0.95
+      extraction: 0.96
+      summarization: 0.96
+      translation: 0.95
+      customer_support: 0.95
+      coding: 0.97
+      math: 0.95
+      reasoning: 0.97
+      research: 0.96
+      creative: 0.96
+      agentic: 0.97
+    capabilities: [text, vision, json, tools, reasoning, long_context]
+    data_boundary: external
+    tags: [sampling]
+
+  - id: anthropic/claude-opus-5
+    provider: anthropic
+    adapter: anthropic_messages
+    provider_model: claude-opus-5
+    api_key_env: ANTHROPIC_API_KEY
+    pricing:
+      input_per_million: 5.00
+      output_per_million: 25.00
+    context_window: 1000000
+    max_output_tokens: 128000
+    expected_latency_ms: 3900
+    quality:
+      general: 0.985
+      classification: 0.97
+      extraction: 0.98
+      summarization: 0.98
+      translation: 0.97
+      customer_support: 0.97
+      coding: 0.99
+      math: 0.985
+      reasoning: 0.99
+      research: 0.99
+      creative: 0.99
+      agentic: 0.99
+    capabilities: [text, vision, json, tools, reasoning, long_context]
+    data_boundary: external
+    tags: [sampling]
+
+  - id: anthropic/claude-fable-5
+    provider: anthropic
+    adapter: anthropic_messages
+    provider_model: claude-fable-5
+    api_key_env: ANTHROPIC_API_KEY
+    pricing:
+      input_per_million: 10.00
+      output_per_million: 50.00
+    context_window: 1000000
+    max_output_tokens: 128000
+    expected_latency_ms: 5200
+    quality:
+      general: 0.99
+      classification: 0.98
+      extraction: 0.99
+      summarization: 0.99
+      translation: 0.98
+      customer_support: 0.98
+      coding: 0.995
+      math: 0.995
+      reasoning: 0.997
+      research: 0.997
+      creative: 0.995
+      agentic: 0.995
+    capabilities: [text, vision, json, tools, reasoning, long_context]
+    data_boundary: external
+    tags: [sampling]
+
+  # Google native generateContent API.
+  - id: google/gemini-3.5-flash-lite
+    provider: google
+    adapter: gemini_generate_content
+    provider_model: gemini-3.5-flash-lite
+    api_key_env: GEMINI_API_KEY
+    pricing:
+      input_per_million: 0.30
+      output_per_million: 2.50
+    context_window: 1000000
+    max_output_tokens: 64000
+    expected_latency_ms: 700
+    quality:
+      general: 0.82
+      classification: 0.90
+      extraction: 0.89
+      summarization: 0.86
+      translation: 0.88
+      customer_support: 0.85
+      coding: 0.79
+      math: 0.78
+      reasoning: 0.78
+      research: 0.77
+      creative: 0.81
+      agentic: 0.82
+    capabilities: [text, vision, json, tools, reasoning, long_context]
+    data_boundary: external
+
+  - id: google/gemini-3.6-flash
+    provider: google
+    adapter: gemini_generate_content
+    provider_model: gemini-3.6-flash
+    api_key_env: GEMINI_API_KEY
+    pricing:
+      input_per_million: 1.50
+      output_per_million: 7.50
+    context_window: 1000000
+    max_output_tokens: 64000
+    expected_latency_ms: 1250
+    quality:
+      general: 0.92
+      classification: 0.94
+      extraction: 0.94
+      summarization: 0.93
+      translation: 0.94
+      customer_support: 0.92
+      coding: 0.92
+      math: 0.92
+      reasoning: 0.93
+      research: 0.92
+      creative: 0.92
+      agentic: 0.93
+    capabilities: [text, vision, json, tools, reasoning, long_context]
+    data_boundary: external
+
+  # DeepSeek via its OpenAI-compatible endpoint.
+  - id: deepseek/v4-flash
+    provider: deepseek
+    adapter: openai_compatible
+    provider_model: deepseek-v4-flash
+    api_key_env: DEEPSEEK_API_KEY
+    base_url: https://api.deepseek.com
+    pricing:
+      input_per_million: 0.14
+      cached_input_per_million: 0.0028
+      output_per_million: 0.28
+    context_window: 1000000
+    max_output_tokens: 384000
+    expected_latency_ms: 950
+    quality:
+      general: 0.86
+      classification: 0.90
+      extraction: 0.90
+      summarization: 0.88
+      translation: 0.89
+      customer_support: 0.87
+      coding: 0.88
+      math: 0.87
+      reasoning: 0.88
+      research: 0.85
+      creative: 0.84
+      agentic: 0.88
+    capabilities: [text, json, tools, reasoning, long_context]
+    data_boundary: external
+    tags: [reasoning, sampling]
+
+  - id: deepseek/v4-pro
+    provider: deepseek
+    adapter: openai_compatible
+    provider_model: deepseek-v4-pro
+    api_key_env: DEEPSEEK_API_KEY
+    base_url: https://api.deepseek.com
+    pricing:
+      input_per_million: 0.435
+      cached_input_per_million: 0.003625
+      output_per_million: 0.87
+    context_window: 1000000
+    max_output_tokens: 384000
+    expected_latency_ms: 1700
+    quality:
+      general: 0.94
+      classification: 0.94
+      extraction: 0.95
+      summarization: 0.94
+      translation: 0.94
+      customer_support: 0.93
+      coding: 0.96
+      math: 0.96
+      reasoning: 0.96
+      research: 0.95
+      creative: 0.92
+      agentic: 0.95
+    capabilities: [text, json, tools, reasoning, long_context]
+    data_boundary: external
+    tags: [reasoning, sampling]
+
+  # Optional local/vLLM endpoint. It becomes available when LOCAL_OPENAI_BASE_URL is set.
+  - id: local/openai-compatible
+    provider: local
+    adapter: openai_compatible
+    provider_model: local-model
+    base_url_env: LOCAL_OPENAI_BASE_URL
+    pricing:
+      input_per_million: 0.00
+      output_per_million: 0.00
+    context_window: 131072
+    max_output_tokens: 16384
+    expected_latency_ms: 1100
+    quality:
+      general: 0.76
+      classification: 0.84
+      extraction: 0.83
+      summarization: 0.80
+      translation: 0.79
+      customer_support: 0.78
+      coding: 0.78
+      math: 0.74
+      reasoning: 0.75
+      research: 0.70
+      creative: 0.76
+      agentic: 0.77
+    capabilities: [text, json, tools, reasoning, long_context]
+    data_boundary: local
+    tags: [reasoning, sampling]
