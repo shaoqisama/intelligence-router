@@ -1,0 +1,18 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.data/*.db
+.DS_Store
+
+# Build and packaging artifacts
+build/
+dist/
+*.egg-info/
+
+# Test and coverage artifacts
+.coverage
+coverage.xml
+htmlcov/
