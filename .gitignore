@@ -16,3 +16,6 @@ dist/
 .coverage
 coverage.xml
 htmlcov/
+
+# Local browser-validation captures
+screenshots/
