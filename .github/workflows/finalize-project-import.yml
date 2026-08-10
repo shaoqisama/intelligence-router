@@ -1,0 +1,57 @@
+name: Finalize project import
+
+on:
+  push:
+    paths:
+      - ".ir-import/READY"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: intelligence-router-project-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download and verify tested source snapshot
+        shell: bash
+        env:
+          ARCHIVE_B64_URL: https://paste.rs/fQbzE
+          ARCHIVE_B64_SHA256: 9bebe6436182ef9cb700a555388a5c525b1abeea71d8301d049e53b537421b3d
+          ARCHIVE_SHA256: 81b9a2b52c05c22015106ece0c1abe3f02a80f6780ae8f4ae78476809ad13bfc
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-all-errors "$ARCHIVE_B64_URL" -o /tmp/project.b64
+          echo "$ARCHIVE_B64_SHA256  /tmp/project.b64" | sha256sum -c -
+          base64 --decode /tmp/project.b64 > /tmp/project.tar.gz
+          echo "$ARCHIVE_SHA256  /tmp/project.tar.gz" | sha256sum -c -
+          tar -tzf /tmp/project.tar.gz >/dev/null
+
+      - name: Import project and push exact snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} +
+          tar -xzf /tmp/project.tar.gz -C .
+          rm -rf .ir-import
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "Repository already matches the tested snapshot."
+            exit 0
+          fi
+
+          git commit -m "Import Intelligence Router MVP 0.2.0"
+          git push origin HEAD:main
